@@ -11,6 +11,12 @@ use libc::{SIGHUP, SIGINT, SIGQUIT, SIGILL, SIGABRT, SIGFPE, SIGKILL, SIGSEGV, S
            SIGBUS, SIGPROF, SIGSYS, SIGTRAP, SIGURG, SIGVTALRM, SIGXCPU, SIGXFSZ, SIGIO, SIGWINCH};
 
 pub fn notify(signal: &[Signal]) -> mpsc::Receiver<Signal> {
+    let (tx, rx) = mpsc::channel();
+    notify_on(tx, signal);
+    rx
+}
+
+pub fn notify_on(tx: mpsc::Sender<Signal>, signal: &[Signal]) {
     unsafe {
         let mut sa: libc::sigaction = ::std::mem::zeroed();
         let f: extern "C" fn(libc::c_int, *const libc::siginfo_t, *const libc::c_void) =
@@ -25,12 +31,10 @@ pub fn notify(signal: &[Signal]) -> mpsc::Receiver<Signal> {
                     .unwrap();
         }
     }
-    let (tx, rx) = mpsc::channel();
     let mut notifiers = NOTIFIER.lock().unwrap();
     for sig in signal {
         notifiers.entry(*sig).or_insert(Vec::new()).push(tx.clone());
     }
-    rx
 }
 
 extern "C" fn signal_handler(signal: libc::c_int,
