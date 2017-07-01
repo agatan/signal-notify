@@ -1,6 +1,6 @@
 [package]
 name = "signal-notify"
-version = "0.1.0"
+version = "0.1.1"
 authors = ["Naomichi Agata <agatan039@gmail.com>"]
 description = "Catch OS signals"
 license-file = "LICENSE"
