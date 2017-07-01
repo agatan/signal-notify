@@ -1,7 +1,7 @@
 `signal-notify` crate provides a simple way to wait for signals in *nix systems through standard
 `std::sync::mpsc` API.
 
-```
+```rust
 use signal_notify::{notify, Signal};
 
 let rx = notify(&[Signal::INT, Signal::HUP]);
