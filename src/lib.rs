@@ -199,11 +199,20 @@ fn start() {
 fn read_signal() -> Option<Signal> {
     let mut buf: [u8; 4] = [0; 4];
     unsafe {
-        let n = libc::read(PIPE[0], buf.as_mut_ptr() as *mut _, 4);
-        if n != 4 {
-            None
-        } else {
-            Some(Signal::new(std::mem::transmute(buf)))
+        loop {
+            let n = libc::read(PIPE[0], buf.as_mut_ptr() as *mut _, 4);
+            if n == 0 {
+                return None;
+            } else if n == -1 {
+                let err = io::Error::last_os_error();
+                match err.kind() {
+                    io::ErrorKind::WouldBlock |
+                    io::ErrorKind::Interrupted => continue,
+                    _ => panic!(err),
+                }
+            } else {
+                return Some(Signal::new(std::mem::transmute(buf)));
+            }
         }
     }
 }
