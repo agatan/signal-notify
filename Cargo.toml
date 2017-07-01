@@ -1,0 +1,8 @@
+[package]
+name = "signal-notify"
+version = "0.1.0"
+authors = ["agatan <agatan039@gmail.com>"]
+
+[dependencies]
+libc = "0.2"
+lazy_static = "0.2"
