@@ -1,10 +1,6 @@
-#![feature(mpsc_select)]
-
 extern crate signal_notify;
 
 use signal_notify::{notify, Signal};
-
-use std::sync::mpsc::Select;
 
 fn main() {
     let sigint = notify(&[Signal::INT]);
