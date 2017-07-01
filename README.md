@@ -1,6 +1,8 @@
 `signal-notify` crate provides a simple way to wait for signals in *nix systems through standard
 `std::sync::mpsc` API.
 
+[![Build Status](https://travis-ci.org/agatan/signal-notify.svg?branch=master)](https://travis-ci.org/agatan/signal-notify)
+
 ```rust
 use signal_notify::{notify, Signal};
 
