@@ -5,5 +5,5 @@ rust:
   - nightly
 script:
   - cargo build --verbose
-  - cargo doc
+  - cargo doc --no-deps
   - cargo test --verbose
