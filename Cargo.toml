@@ -1,8 +1,14 @@
 [package]
 name = "signal-notify"
 version = "0.1.0"
-authors = ["agatan <agatan039@gmail.com>"]
+authors = ["Naomichi Agata <agatan039@gmail.com>"]
+description = "Catch OS signals"
+license-file = "LICENSE"
+homepage = "https://github.com/agatan/signal-notify"
+repository = "https://github.com/agatan/signal-notify"
+keywords = ["os", "signal", "channel"]
 
 [dependencies]
 libc = "0.2"
 lazy_static = "0.2"
+
