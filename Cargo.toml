@@ -1,8 +1,8 @@
 [package]
 name = "signal-notify"
-version = "0.1.1"
+version = "0.1.2"
 authors = ["Naomichi Agata <agatan039@gmail.com>"]
-description = "Catch OS signals"
+description = "Catch OS signals with standard mpsc channel"
 license-file = "LICENSE"
 homepage = "https://github.com/agatan/signal-notify"
 repository = "https://github.com/agatan/signal-notify"
