@@ -4,7 +4,6 @@ use signal_notify::{notify, Signal};
 
 fn main() {
     let rx = notify(&[Signal::INT, Signal::WINCH]);
-    println!("START");
-    println!("RECV: {:?}", rx.recv().unwrap());
-    println!("FIN");
+    println!("Waiting SIGINT and SIGWINCH...");
+    println!("got: {:?}", rx.recv().unwrap());
 }
