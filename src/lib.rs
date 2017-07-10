@@ -39,27 +39,34 @@ pub fn notify_on(tx: mpsc::Sender<Signal>, signal: &[Signal]) {
         sa.sa_sigaction = ::std::mem::transmute(f);
         sa.sa_flags |= libc::SA_SIGINFO;
         for sig in signal {
-            ok_or_errno((),
-                        libc::sigaction(sig.as_sig(),
-                                        &sa as *const libc::sigaction,
-                                        ::std::ptr::null_mut()))
-                    .unwrap();
+            ok_or_errno(
+                (),
+                libc::sigaction(
+                    sig.as_sig(),
+                    &sa as *const libc::sigaction,
+                    ::std::ptr::null_mut(),
+                ),
+            ).unwrap();
         }
-    }
-    let mut notifiers = NOTIFIER.lock().unwrap();
-    for sig in signal {
-        notifiers.entry(*sig).or_insert(Vec::new()).push(tx.clone());
+        let mut notifiers = NOTIFIER.lock().unwrap();
+        for sig in signal {
+            notifiers.entry(*sig).or_insert(Vec::new()).push(tx.clone());
+        }
     }
 }
 
-extern "C" fn signal_handler(signal: libc::c_int,
-                             _siginfo: *const libc::siginfo_t,
-                             _ctx: *const libc::c_void) {
+extern "C" fn signal_handler(
+    signal: libc::c_int,
+    _siginfo: *const libc::siginfo_t,
+    _ctx: *const libc::c_void,
+) {
     let n = signal as i32;
     unsafe {
-        libc::write(PIPE[1],
-                    &n as *const _ as *const _,
-                    ::std::mem::size_of::<i32>());
+        libc::write(
+            PIPE[1],
+            &n as *const _ as *const _,
+            ::std::mem::size_of::<i32>(),
+        );
     }
 }
 
@@ -183,17 +190,17 @@ impl Signal {
 
 fn start() {
     ::std::thread::spawn(|| loop {
-                             let signal = match read_signal() {
-                                 None => break,
-                                 Some(signal) => signal,
-                             };
-                             let notifier = NOTIFIER.lock().unwrap();
-                             if let Some(senders) = notifier.get(&signal) {
-                                 for tx in senders {
-                                     let _ = tx.send(signal);
-                                 }
-                             }
-                         });
+        let signal = match read_signal() {
+            None => break,
+            Some(signal) => signal,
+        };
+        let notifier = NOTIFIER.lock().unwrap();
+        if let Some(senders) = notifier.get(&signal) {
+            for tx in senders {
+                let _ = tx.send(signal);
+            }
+        }
+    });
 }
 
 fn read_signal() -> Option<Signal> {
@@ -208,7 +215,7 @@ fn read_signal() -> Option<Signal> {
                 match err.kind() {
                     io::ErrorKind::WouldBlock |
                     io::ErrorKind::Interrupted => continue,
-                    _ => panic!(err),
+                    _ => panic!("read error in signal_notify: {}", err),
                 }
             } else {
                 return Some(Signal::new(std::mem::transmute(buf)));
