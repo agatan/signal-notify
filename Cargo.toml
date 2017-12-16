@@ -1,6 +1,6 @@
 [package]
 name = "signal-notify"
-version = "0.1.2"
+version = "0.1.3"
 authors = ["Naomichi Agata <agatan039@gmail.com>"]
 description = "Catch OS signals with standard mpsc channel"
 license-file = "LICENSE"
